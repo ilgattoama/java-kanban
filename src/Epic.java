@@ -22,11 +22,17 @@ public class Epic extends Task {
         recalculateStatus();
     }
 
+    public void clearSubtasks() {
+        subtasks.clear();
+        recalculateStatus();
+    }
+
     public void recalculateStatus() {
         if (subtasks.isEmpty()) {
             setStatus(Status.NEW);
             return;
         }
+
         boolean allNew = true;
         boolean allDone = true;
 
@@ -38,6 +44,7 @@ public class Epic extends Task {
                 allDone = false;
             }
         }
+
         if (allNew) {
             setStatus(Status.NEW);
         } else if (allDone) {
