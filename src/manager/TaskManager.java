@@ -1,4 +1,7 @@
+package manager;
+
 import task.Epic;
+import task.Subtask;
 import task.Task;
 
 import java.util.ArrayList;
@@ -31,7 +34,6 @@ public class TaskManager {
     }
 
     public void deleteAllEpics() {
-        epics.values().forEach(Epic::clearSubtasks);
         epics.clear();
         subtasks.clear();
     }
