@@ -1,3 +1,6 @@
+import task.Epic;
+import task.Task;
+
 public class Subtask extends Task {
     private Epic epic;
 
