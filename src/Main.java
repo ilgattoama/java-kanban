@@ -1,3 +1,4 @@
+import manager.InMemoryTaskManager;
 import manager.TaskManager;
 import task.Epic;
 import task.Status;
@@ -6,7 +7,7 @@ import task.Task;
 
 public class Main {
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = new InMemoryTaskManager();
 
         Task task1 = taskManager.createTask(new Task(0, "Купить продукты", "Молоко, яйца", Status.NEW));
         Task task2 = taskManager.createTask(new Task(0, "Позвонить врачу", "Записаться на приём", Status.NEW));

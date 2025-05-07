@@ -4,119 +4,34 @@ import task.Epic;
 import task.Subtask;
 import task.Task;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
-public class TaskManager {
-    private HashMap<Integer, Task> tasks = new HashMap<>();
-    private HashMap<Integer, Epic> epics = new HashMap<>();
-    private HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    private int idCounter = 1;
+public interface TaskManager {
+    List<Task> getAllTasks();
+    List<Epic> getAllEpics();
+    List<Subtask> getAllSubtasks();
 
-    private int generateId() {
-        return idCounter++;
-    }
+    void deleteAllTasks();
+    void deleteAllEpics();
+    void deleteAllSubtasks();
 
-    public ArrayList<Task> getAllTasks() {
-        return new ArrayList<>(tasks.values());
-    }
+    Task getTaskById(int id);
+    Epic getEpicById(int id);
+    Subtask getSubtaskById(int id);
 
-    public ArrayList<Epic> getAllEpics() {
-        return new ArrayList<>(epics.values());
-    }
+    Task createTask(Task task);
+    Epic createEpic(Epic epic);
+    Subtask createSubtask(Subtask subtask);
 
-    public ArrayList<Subtask> getAllSubtasks() {
-        return new ArrayList<>(subtasks.values());
-    }
+    void updateTask(Task task);
+    void updateEpic(Epic epic);
+    void updateSubtask(Subtask subtask);
 
-    public void deleteAllTasks() {
-        tasks.clear();
-    }
+    void deleteTask(int id);
+    void deleteEpic(int id);
+    void deleteSubtask(int id);
 
-    public void deleteAllEpics() {
-        epics.clear();
-        subtasks.clear();
-    }
+    List<Subtask> getSubtasksByEpicId(int epicId);
 
-    public void deleteAllSubtasks() {
-        for (Epic epic : epics.values()) {
-            epic.clearSubtasks();
-            epic.recalculateStatus();
-        }
-        subtasks.clear();
-    }
-
-    public Task getTaskById(int id) {
-        return tasks.get(id);
-    }
-
-    public Epic getEpicById(int id) {
-        return epics.get(id);
-    }
-
-    public Subtask getSubtaskById(int id) {
-        return subtasks.get(id);
-    }
-
-    public Task createTask(Task task) {
-        task = new Task(generateId(), task.getName(), task.getDescription(), task.getStatus());
-        tasks.put(task.getId(), task);
-        return task;
-    }
-
-    public Epic createEpic(Epic epic) {
-        epic = new Epic(generateId(), epic.getName(), epic.getDescription());
-        epics.put(epic.getId(), epic);
-        return epic;
-    }
-
-    public Subtask createSubtask(Subtask subtask) {
-        subtask = new Subtask(generateId(), subtask.getName(), subtask.getDescription(), subtask.getStatus(), subtask.getEpic());
-        subtasks.put(subtask.getId(), subtask);
-        subtask.getEpic().addSubtask(subtask);
-        subtask.getEpic().recalculateStatus();
-        return subtask;
-    }
-
-    public void updateTask(Task task) {
-        tasks.put(task.getId(), task);
-    }
-
-    public void updateEpic(Epic epic) {
-        epics.put(epic.getId(), epic);
-        epic.recalculateStatus();
-    }
-
-    public void updateSubtask(Subtask subtask) {
-        subtasks.put(subtask.getId(), subtask);
-        Epic epic = subtask.getEpic();
-        epic.getSubtasks().removeIf(s -> s.getId() == subtask.getId());
-        epic.addSubtask(subtask);
-    }
-
-    public void deleteTask(int id) {
-        tasks.remove(id);
-    }
-
-    public void deleteEpic(int id) {
-        Epic epic = epics.remove(id);
-        if (epic != null) {
-            for (Subtask sub : epic.getSubtasks()) {
-                subtasks.remove(sub.getId());
-            }
-        }
-    }
-
-    public void deleteSubtask(int id) {
-        Subtask subtask = subtasks.remove(id);
-        if (subtask != null) {
-            Epic epic = subtask.getEpic();
-            epic.removeSubtask(subtask);
-        }
-    }
-
-    public ArrayList<Subtask> getSubtasksByEpicId(int epicId) {
-        Epic epic = epics.get(epicId);
-        return epic != null ? new ArrayList<>(epic.getSubtasks()) : new ArrayList<>();
-    }
+    List<Task> getHistory();
 }
