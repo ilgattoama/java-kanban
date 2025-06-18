@@ -1,5 +1,7 @@
 package task;
 
+import java.util.Objects;
+
 public class Task {
     private final int id;
     private final String name;
@@ -43,7 +45,7 @@ public class Task {
 
     @Override
     public int hashCode() {
-        return id;
+        return Objects.hash(id);
     }
 
     @Override

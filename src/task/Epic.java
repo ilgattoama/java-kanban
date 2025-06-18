@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
-    private final List<Subtask> subtasks;
+    private final List<Subtask> subtasks = new ArrayList<>();
 
     public Epic(int id, String name, String description) {
         super(id, name, description, Status.NEW);
-        this.subtasks = new ArrayList<>();
     }
 
     public List<Subtask> getSubtasks() {
@@ -17,17 +16,6 @@ public class Epic extends Task {
 
     public void addSubtask(Subtask subtask) {
         subtasks.add(subtask);
-        recalculateStatus();
-    }
-
-    public void removeSubtask(Subtask subtask) {
-        subtasks.remove(subtask);
-        recalculateStatus();
-    }
-
-    public void clearSubtasks() {
-        subtasks.clear();
-        recalculateStatus();
     }
 
     public void recalculateStatus() {
@@ -39,11 +27,11 @@ public class Epic extends Task {
         boolean allNew = true;
         boolean allDone = true;
 
-        for (Subtask sub : subtasks) {
-            if (sub.getStatus() != Status.NEW) {
+        for (Subtask subtask : subtasks) {
+            if (subtask.getStatus() != Status.NEW) {
                 allNew = false;
             }
-            if (sub.getStatus() != Status.DONE) {
+            if (subtask.getStatus() != Status.DONE) {
                 allDone = false;
             }
         }
@@ -64,7 +52,7 @@ public class Epic extends Task {
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() +
-                ", subtasks=" + subtasks +
+                ", subtasks=" + subtasks.size() +
                 '}';
     }
 }

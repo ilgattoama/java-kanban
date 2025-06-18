@@ -1,9 +1,11 @@
 package manager;
 
 import task.Task;
+
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
+    private static final int HISTORY_LIMIT = 10;
 
     private static class Node {
         Task task;
@@ -25,10 +27,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     public void add(Task task) {
         if (task == null) return;
 
-        Node existingNode = nodes.get(task.getId());
-        if (existingNode != null) {
-            removeNode(existingNode);
-        }
+        remove(task.getId());
         linkLast(task);
     }
 
@@ -61,7 +60,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         nodes.remove(node.task.getId());
     }
 
-    @Override
     public void remove(int id) {
         Node node = nodes.get(id);
         if (node != null) {
