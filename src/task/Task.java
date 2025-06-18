@@ -36,9 +36,9 @@ public class Task {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Task task = (Task) obj;
-        return id == task.id;
+        if (!(obj instanceof Task)) return false;
+        Task other = (Task) obj;
+        return id == other.id;
     }
 
     @Override
@@ -48,7 +48,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "task.Task{" +
+        return "Task{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
