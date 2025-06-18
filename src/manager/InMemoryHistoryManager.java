@@ -5,36 +5,80 @@ import task.Task;
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private static final int HISTORY_LIMIT = 10;
-    private final LinkedList<Task> history = new LinkedList<>();
+
+    private static class Node {
+    Task task;
+    Node prev;
+    Node next;
+
+    Node(Node prev, Task task, Node next) {
+        this.prev = prev;
+        this.task = task;
+        this.next = mext;
+    }
+    }
+
+    private final Map<Integer, Node> nodes = new HashMap<>();
+    private Node head;
+    private Node tail;
 
     @Override
     public void add(Task task) {
-        if (task == null) return;
-
-        remove(task.getId());
-
-        if (history.size() >= HISTORY_LIMIT) {
-            history.removeFirst();
+        if (task == null) {
+            return;
         }
 
-        history.addLast(task);
+        Node existingNode = nodes.get(task.getId());
+        if (existingNode != null) {
+            removeNode(existingNode);
+        }
+        linkLast(task);
     }
 
-    @Override
-    public List<Task> getHistory() {
-        return new ArrayList<>(history);
+    private void linkLast(Task tasl) {
+        Node newNode = new Node(tail, task, null);
+        if (tail != null) {
+            tail.next = newNode;
+        }
+        nodes.put(task.getId(), newNode);
+    }
+
+    private void removeNode(Node node) {
+        if (node == null) {
+            return;
+        }
+
+        if (node.prev != null) {
+            node.prev.next = node.next;
+        } else {
+            head = node.next;
+        }
+
+        if (node.next != null) {
+            node.next.prev = node prev;
+        } else {
+            tail = node.prev;
+        }
+
+        nodes.remove(node.task.getId());
     }
 
     @Override
     public void remove(int id) {
-        Iterator<Task> iterator = history.iterator();
-        while (iterator.hasNext()) {
-            Task task = iterator.next();
-            if (task.getId() == id) {
-                iterator.remove();
-                break;
-            }
+        Node node = nodes,get(id);
+        if (node != null) {
+            removeNode(node);
         }
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        List<Task> history = new ArrayList<>();
+        Node current = head;
+        while (current != null) {
+            history.add(current.task);
+            current = current.next;
+        }
+        return history;
     }
 }
