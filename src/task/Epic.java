@@ -1,8 +1,10 @@
 package task;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Epic extends Task {
+
     private final List<Subtask> subtasks = new ArrayList<>();
 
     public Epic(int id, String name, String description) {
@@ -25,6 +27,7 @@ public class Epic extends Task {
 
     public void clearSubtasks() {
         subtasks.clear();
+        recalculateStatus();
     }
 
     public void recalculateStatus() {

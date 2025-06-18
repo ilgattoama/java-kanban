@@ -1,19 +1,19 @@
 package manager;
 
-import task.*;
-
+import task.Task;
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private static final int HISTORY_LIMIT = 10;
 
     private static class Node {
         Task task;
         Node prev;
         Node next;
 
-        Node(Task task) {
+        Node(Node prev, Task task, Node next) {
+            this.prev = prev;
             this.task = task;
+            this.next = next;
         }
     }
 
@@ -24,28 +24,39 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void add(Task task) {
         if (task == null) return;
-        remove(task.getId());
+
+        remove(task.getId());   // Если задача есть, удаляем из истории, чтобы добавить в конец
+
         linkLast(task);
     }
 
     private void linkLast(Task task) {
-        Node node = new Node(task);
+        Node newNode = new Node(tail, task, null);
+
         if (tail != null) {
-            tail.next = node;
-            node.prev = tail;
+            tail.next = newNode;
         } else {
-            head = node;
+            head = newNode;
         }
-        tail = node;
-        nodes.put(task.getId(), node);
+        tail = newNode;
+
+        nodes.put(task.getId(), newNode);
     }
 
     private void removeNode(Node node) {
-        if (node.prev != null) node.prev.next = node.next;
-        else head = node.next;
+        if (node == null) return;
 
-        if (node.next != null) node.next.prev = node.prev;
-        else tail = node.prev;
+        if (node.prev != null) {
+            node.prev.next = node.next;
+        } else {
+            head = node.next;
+        }
+
+        if (node.next != null) {
+            node.next.prev = node.prev;
+        } else {
+            tail = node.prev;
+        }
 
         nodes.remove(node.task.getId());
     }
@@ -53,7 +64,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void remove(int id) {
         Node node = nodes.get(id);
-        if (node != null) removeNode(node);
+        removeNode(node);
     }
 
     @Override
