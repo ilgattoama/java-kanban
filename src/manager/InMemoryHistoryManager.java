@@ -4,6 +4,7 @@ import task.Task;
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
+    private static final int HISTORY_LIMIT = 10;
 
     private static class Node {
         Task task;
@@ -24,22 +25,21 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void add(Task task) {
         if (task == null) return;
-
-        remove(task.getId());   // Если задача есть, удаляем из истории, чтобы добавить в конец
-
+        remove(task.getId()); // Если задача уже есть, удаляем, чтобы добавить в конец
         linkLast(task);
+        if (nodes.size() > HISTORY_LIMIT) {
+            remove(head.task.getId());
+        }
     }
 
     private void linkLast(Task task) {
         Node newNode = new Node(tail, task, null);
-
         if (tail != null) {
             tail.next = newNode;
         } else {
             head = newNode;
         }
         tail = newNode;
-
         nodes.put(task.getId(), newNode);
     }
 
@@ -64,7 +64,9 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void remove(int id) {
         Node node = nodes.get(id);
-        removeNode(node);
+        if (node != null) {
+            removeNode(node);
+        }
     }
 
     @Override

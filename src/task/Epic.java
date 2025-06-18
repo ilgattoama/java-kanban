@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
-
     private final List<Subtask> subtasks = new ArrayList<>();
 
     public Epic(int id, String name, String description) {
@@ -40,13 +39,22 @@ public class Epic extends Task {
         boolean allDone = true;
 
         for (Subtask subtask : subtasks) {
-            if (subtask.getStatus() != Status.NEW) allNew = false;
-            if (subtask.getStatus() != Status.DONE) allDone = false;
+            Status status = subtask.getStatus();
+            if (status != Status.NEW) {
+                allNew = false;
+            }
+            if (status != Status.DONE) {
+                allDone = false;
+            }
         }
 
-        if (allNew) setStatus(Status.NEW);
-        else if (allDone) setStatus(Status.DONE);
-        else setStatus(Status.IN_PROGRESS);
+        if (allNew) {
+            setStatus(Status.NEW);
+        } else if (allDone) {
+            setStatus(Status.DONE);
+        } else {
+            setStatus(Status.IN_PROGRESS);
+        }
     }
 
     @Override
