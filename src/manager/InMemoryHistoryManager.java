@@ -1,6 +1,7 @@
 package manager;
 
 import task.Task;
+
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
@@ -25,10 +26,12 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void add(Task task) {
         if (task == null) return;
-        remove(task.getId()); // Если задача уже есть, удаляем, чтобы добавить в конец
+
+        remove(task.getId()); // если уже есть — удаляем
         linkLast(task);
+
         if (nodes.size() > HISTORY_LIMIT) {
-            remove(head.task.getId());
+            remove(head.task.getId()); // удаляем старую (первую) задачу
         }
     }
 
