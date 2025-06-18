@@ -1,7 +1,6 @@
 package task;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Epic extends Task {
     private final List<Subtask> subtasks = new ArrayList<>();
@@ -16,6 +15,16 @@ public class Epic extends Task {
 
     public void addSubtask(Subtask subtask) {
         subtasks.add(subtask);
+        recalculateStatus();
+    }
+
+    public void removeSubtask(Subtask subtask) {
+        subtasks.remove(subtask);
+        recalculateStatus();
+    }
+
+    public void clearSubtasks() {
+        subtasks.clear();
     }
 
     public void recalculateStatus() {
@@ -28,21 +37,13 @@ public class Epic extends Task {
         boolean allDone = true;
 
         for (Subtask subtask : subtasks) {
-            if (subtask.getStatus() != Status.NEW) {
-                allNew = false;
-            }
-            if (subtask.getStatus() != Status.DONE) {
-                allDone = false;
-            }
+            if (subtask.getStatus() != Status.NEW) allNew = false;
+            if (subtask.getStatus() != Status.DONE) allDone = false;
         }
 
-        if (allNew) {
-            setStatus(Status.NEW);
-        } else if (allDone) {
-            setStatus(Status.DONE);
-        } else {
-            setStatus(Status.IN_PROGRESS);
-        }
+        if (allNew) setStatus(Status.NEW);
+        else if (allDone) setStatus(Status.DONE);
+        else setStatus(Status.IN_PROGRESS);
     }
 
     @Override
