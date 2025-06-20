@@ -2,12 +2,13 @@ package task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Epic extends Task {
     private final List<Subtask> subtasks = new ArrayList<>();
 
     public Epic(int id, String name, String description) {
-        super(id, name, description, Status.NEW); // Эпик всегда начинается со статусом NEW
+        super(id, name, description, Status.NEW);
     }
 
     public List<Subtask> getSubtasks() {
@@ -55,6 +56,17 @@ public class Epic extends Task {
         } else {
             setStatus(Status.IN_PROGRESS);
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!super.equals(obj)) return false;
+        return obj instanceof Epic;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode());
     }
 
     @Override
