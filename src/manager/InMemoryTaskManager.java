@@ -4,6 +4,7 @@ import tasks.Task;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Status;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -152,6 +153,11 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    @Override
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
+    }
+
     private void updateEpicStatus(Epic epic) {
         List<Subtask> epicSubtasks = new ArrayList<>();
         for (Integer subtaskId : epic.getSubtaskIds()) {
@@ -186,7 +192,4 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStatus(Status.IN_PROGRESS);
         }
     }
-
-    @Override
-    public List<Task> getHistory() {
-        return
+}
