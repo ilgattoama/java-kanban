@@ -8,7 +8,7 @@ import tasks.Task;
 public class Main {
     public static void main(String[] args) {
         TaskManager taskManager = Managers.getDefault();
-
+        
         Task task1 = new Task(0, "Купить продукты", "Молоко, хлеб, яйца", Status.NEW);
         Task task2 = new Task(0, "Сделать уроки", "Математика, русский", Status.NEW);
         taskManager.createTask(task1);
@@ -29,24 +29,30 @@ public class Main {
 
         System.out.println("СПИСОК ЗАДАЧ:");
         System.out.println("\nПростые задачи:");
-        taskManager.getTasks().forEach(task ->
-                System.out.println(task.getName() + " - " + getStatus(task.getStatus())));
+        for (Task task : taskManager.getTasks()) {
+            System.out.println(task.getName() + " - " + getStatus(task.getStatus()));
+        }
 
         System.out.println("\nСложные задачи:");
-        taskManager.getEpics().forEach(epic -> {
+        for (Epic epic : taskManager.getEpics()) {
             System.out.println(epic.getName() + " - " + getStatus(epic.getStatus()));
-            taskManager.getSubtasks().stream()
-                    .filter(sub -> sub.getEpicId() == epic.getId())
-                    .forEach(sub -> System.out.println("  " + sub.getName() + " - " + getStatus(sub.getStatus())));
-        });
+            System.out.println("  Подзадачи:");
+            for (Subtask subtask : taskManager.getSubtasks()) {
+                if (subtask.getEpicId() == epic.getId()) {
+                    System.out.println("  - " + subtask.getName() + " - " + getStatus(subtask.getStatus()));
+                }
+            }
+        }
     }
 
     private static String getStatus(Status status) {
-        switch(status) {
-            case NEW: return "Не начато";
-            case IN_PROGRESS: return "В работе";
-            case DONE: return "Выполнено";
-            default: return "";
+        if (status == Status.NEW) {
+            return "Не начато";
+        } else if (status == Status.IN_PROGRESS) {
+            return "В работе";
+        } else if (status == Status.DONE) {
+            return "Выполнено";
         }
+        return "";
     }
 }
