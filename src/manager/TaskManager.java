@@ -1,34 +1,33 @@
 package manager;
 
-import task.*;
+import tasks.Task;
+import tasks.Epic;
+import tasks.Subtask;
 
 import java.util.List;
+import java.util.Map;
 
-public interface TaskManager {
-
+public interface TaskManager
+{
     List<Task> getTasks();
 
     List<Epic> getEpics();
 
     List<Subtask> getSubtasks();
 
-    void deleteAllTasks();
+    Map<Integer, Task> getAllTasks();
 
-    void deleteAllEpics();
+    void addTask(Task task);
 
-    void deleteAllSubtasks();
+    void addEpic(Epic epic);
 
-    Task getTaskById(int id);
+    void addSubtask(Subtask subtask);
 
-    Epic getEpicById(int id);
+    Task getTask(int id);
 
-    Subtask getSubtaskById(int id);
+    Epic getEpic(int id);
 
-    Task createTask(Task task);
-
-    Epic createEpic(Epic epic);
-
-    Subtask createSubtask(Subtask subtask);
+    Subtask getSubtask(int id);
 
     void updateTask(Task task);
 
@@ -36,13 +35,21 @@ public interface TaskManager {
 
     void updateSubtask(Subtask subtask);
 
-    void deleteTask(int id);
+    void removeTask(int id);
 
-    void deleteEpic(int id);
+    void removeEpic(int id);
 
-    void deleteSubtask(int id);
+    void removeSubtask(int id);
 
-    List<Subtask> getSubtasksByEpicId(int epicId);
+    void clearTasks();
+
+    void clearEpics();
+
+    void clearSubtasks();
+
+    List<Subtask> getSubtasksByEpic(int epicId);
+
+    List<Task> getPrioritizedTasks();
 
     List<Task> getHistory();
 }
