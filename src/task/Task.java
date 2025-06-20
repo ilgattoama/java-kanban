@@ -3,7 +3,7 @@ package tasks;
 import java.util.Objects;
 
 public class Task {
-    private final int id;
+    private int id;
     private final String name;
     private final String description;
     private Status status;
@@ -17,6 +17,10 @@ public class Task {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
