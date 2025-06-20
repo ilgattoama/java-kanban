@@ -1,25 +1,73 @@
 package manager;
 
-import org.junit.jupiter.api.Test;
-import task.*;
+import org.junit.jupiter.api.*;
+import tasks.Task;
+import tasks.Status;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class InMemoryHistoryManagerTest {
-
+class InMemoryHistoryManagerTest {
     private HistoryManager historyManager;
 
-   @Test
-    void addShouldPreservePreviousVersionOfTask() {
-       HistoryManager historyManager = new InMemoryHistoryManager();
+    @BeforeEach
+    void setUp() {
+        historyManager = new InMemoryHistoryManager();
+    }
 
-       Task task = new Task(1, "Test", "Desc", Status.NEW);
-       historyManager.add(task);
+    @Test
+    @DisplayName("Добавление задачи в историю")
+    void shouldAddTaskToHistory() {
+        Task task = new Task(1, "Помыть посуду", "", Status.NEW);
+        historyManager.add(task);
 
-       List<Task> history = historyManager.getHistory();
-       assertEquals(1, history.size());
-       assertEquals(task, history.get(0));
-   }
+        List<Task> history = historyManager.getHistory();
+        assertEquals(1, history.size());
+        assertEquals(task, history.get(0));
+    }
+
+    @Test
+    @DisplayName("Удаление задачи из истории")
+    void shouldRemoveTaskFromHistory() {
+        Task task1 = new Task(1, "Задача 1", "", Status.NEW);
+        Task task2 = new Task(2, "Задача 2", "", Status.NEW);
+
+        historyManager.add(task1);
+        historyManager.add(task2);
+        historyManager.remove(1);
+
+        List<Task> history = historyManager.getHistory();
+        assertEquals(1, history.size());
+        assertEquals(task2, history.get(0));
+    }
+
+    @Test
+    @DisplayName("История должна сохранять порядок добавления")
+    void shouldKeepInsertionOrder() {
+        Task task1 = new Task(1, "Первая", "", Status.NEW);
+        Task task2 = new Task(2, "Вторая", "", Status.NEW);
+
+        historyManager.add(task1);
+        historyManager.add(task2);
+
+        List<Task> history = historyManager.getHistory();
+        assertEquals(2, history.size());
+        assertEquals(task1, history.get(0));
+        assertEquals(task2, history.get(1));
+    }
+
+    @Test
+    @DisplayName("Дубликаты должны заменяться")
+    void shouldReplaceDuplicates() {
+        Task task1 = new Task(1, "Старая версия", "", Status.NEW);
+        Task task2 = new Task(1, "Новая версия", "", Status.DONE);
+
+        historyManager.add(task1);
+        historyManager.add(task2);
+
+        List<Task> history = historyManager.getHistory();
+        assertEquals(1, history.size());
+        assertEquals(task2, history.get(0));
+    }
 }

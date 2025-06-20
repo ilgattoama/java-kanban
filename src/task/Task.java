@@ -1,9 +1,9 @@
-package task;
+package tasks;
 
 public class Task {
-    private final int id;
-    private final String name;
-    private final String description;
+    private int id;
+    private String name;
+    private String description;
     private Status status;
 
     public Task(int id, String name, String description, Status status) {
@@ -15,6 +15,10 @@ public class Task {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -31,28 +35,5 @@ public class Task {
 
     public void setStatus(Status status) {
         this.status = status;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Task task = (Task) obj;
-        return id == task.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return id;
-    }
-
-    @Override
-    public String toString() {
-        return "task.Task{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                '}';
     }
 }
