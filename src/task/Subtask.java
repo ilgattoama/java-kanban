@@ -1,22 +1,24 @@
-package task;
+package tasks;
 
 import java.util.Objects;
 
 public class Subtask extends Task {
-    private final Epic epic;
+    private final int epicId;
 
-    public Subtask(int id, String name, String description, Status status, Epic epic) {
+    public Subtask(int id, String name, String description, Status status, int epicId) {
         super(id, name, description, status);
-        this.epic = epic;
+        this.epicId = epicId;
     }
 
-    public Epic getEpic() {
-        return epic;
+    public int getEpicId() {
+        return epicId;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!super.equals(obj)) return false;
+        if (!super.equals(obj)) {
+            return false;
+        }
         return obj instanceof Subtask;
     }
 
@@ -32,7 +34,7 @@ public class Subtask extends Task {
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() +
-                ", epicId=" + epic.getId() +
+                ", epicId=" + epicId +
                 '}';
     }
 }

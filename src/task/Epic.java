@@ -1,66 +1,33 @@
-package task;
+package tasks;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Epic extends Task {
-    private final List<Subtask> subtasks = new ArrayList<>();
+    private final List<Integer> subtaskIds = new ArrayList<>();
 
     public Epic(int id, String name, String description) {
         super(id, name, description, Status.NEW);
     }
 
-    public List<Subtask> getSubtasks() {
-        return subtasks;
+    public List<Integer> getSubtaskIds() {
+        return subtaskIds;
     }
 
-    public void addSubtask(Subtask subtask) {
-        subtasks.add(subtask);
-        recalculateStatus();
+    public void addSubtask(int subtaskId) {
+        subtaskIds.add(subtaskId);
     }
 
-    public void removeSubtask(Subtask subtask) {
-        subtasks.remove(subtask);
-        recalculateStatus();
-    }
-
-    public void clearSubtasks() {
-        subtasks.clear();
-        recalculateStatus();
-    }
-
-    public void recalculateStatus() {
-        if (subtasks.isEmpty()) {
-            setStatus(Status.NEW);
-            return;
-        }
-
-        boolean allNew = true;
-        boolean allDone = true;
-
-        for (Subtask subtask : subtasks) {
-            Status status = subtask.getStatus();
-            if (status != Status.NEW) {
-                allNew = false;
-            }
-            if (status != Status.DONE) {
-                allDone = false;
-            }
-        }
-
-        if (allNew) {
-            setStatus(Status.NEW);
-        } else if (allDone) {
-            setStatus(Status.DONE);
-        } else {
-            setStatus(Status.IN_PROGRESS);
-        }
+    public void removeSubtask(int subtaskId) {
+        subtaskIds.remove((Integer) subtaskId);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!super.equals(obj)) return false;
+        if (!super.equals(obj)) {
+            return false;
+        }
         return obj instanceof Epic;
     }
 
@@ -76,7 +43,7 @@ public class Epic extends Task {
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() +
-                ", subtasksCount=" + subtasks.size() +
+                ", subtasksCount=" + subtaskIds.size() +
                 '}';
     }
 }

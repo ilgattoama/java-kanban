@@ -3,16 +3,18 @@ package manager;
 import tasks.Task;
 import tasks.Epic;
 import tasks.Subtask;
-
-import java.util.*;
+import tasks.Status;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
-    protected Map<Integer, Task> tasks = new HashMap<>();
-    protected Map<Integer, Epic> epics = new HashMap<>();
-    protected Map<Integer, Subtask> subtasks = new HashMap<>();
-
+    protected final Map<Integer, Task> tasks = new HashMap<>();
+    protected final Map<Integer, Epic> epics = new HashMap<>();
+    protected final Map<Integer, Subtask> subtasks = new HashMap<>();
     protected int nextId = 1;
-    protected HistoryManager historyManager = new InMemoryHistoryManager();
+    protected final HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
     public List<Task> getTasks() {
@@ -160,7 +162,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         if (epicSubtasks.isEmpty()) {
-            epic.setStatus(Task.Status.NEW);
+            epic.setStatus(Status.NEW);
             return;
         }
 
@@ -168,25 +170,23 @@ public class InMemoryTaskManager implements TaskManager {
         boolean allDone = true;
 
         for (Subtask subtask : epicSubtasks) {
-            if (subtask.getStatus() != Task.Status.NEW) {
+            if (subtask.getStatus() != Status.NEW) {
                 allNew = false;
             }
-            if (subtask.getStatus() != Task.Status.DONE) {
+            if (subtask.getStatus() != Status.DONE) {
                 allDone = false;
             }
         }
 
         if (allDone) {
-            epic.setStatus(Task.Status.DONE);
+            epic.setStatus(Status.DONE);
         } else if (allNew) {
-            epic.setStatus(Task.Status.NEW);
+            epic.setStatus(Status.NEW);
         } else {
-            epic.setStatus(Task.Status.IN_PROGRESS);
+            epic.setStatus(Status.IN_PROGRESS);
         }
     }
 
     @Override
     public List<Task> getHistory() {
-        return historyManager.getHistory();
-    }
-}
+        return
