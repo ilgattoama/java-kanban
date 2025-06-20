@@ -24,7 +24,9 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        if (task == null) return;
+        if (task == null) {
+            return;
+        }
 
         remove(task.getId()); // если уже есть — удаляем
         linkLast(task);
@@ -46,7 +48,9 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private void removeNode(Node node) {
-        if (node == null) return;
+        if (node == null) {
+            return;
+        }
 
         if (node.prev != null) {
             node.prev.next = node.next;
