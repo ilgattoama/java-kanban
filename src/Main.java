@@ -8,7 +8,7 @@ import tasks.Task;
 public class Main {
     public static void main(String[] args) {
         TaskManager taskManager = Managers.getDefault();
-        
+
         Task task1 = new Task(0, "Купить продукты", "Молоко, хлеб, яйца", Status.NEW);
         Task task2 = new Task(0, "Сделать уроки", "Математика, русский", Status.NEW);
         taskManager.createTask(task1);
