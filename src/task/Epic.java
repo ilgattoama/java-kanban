@@ -14,13 +14,23 @@ public class Epic extends Task {
     public List<Integer> getSubtaskIds() {
         return new ArrayList<>(subtaskIds);
     }
-    public void addSubtask(int id) { subtaskIds.add(id); }
-    public void removeSubtask(int id) { subtaskIds.remove((Integer) id); }
+
+    public void addSubtask(int id) {
+        subtaskIds.add(id);
+    }
+
+    public void removeSubtask(int id) {
+        subtaskIds.remove((Integer) id);
+    }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Epic)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Epic)) {
+            return false;
+        }
         Epic epic = (Epic) o;
         return getId() == epic.getId();
     }
