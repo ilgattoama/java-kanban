@@ -1,7 +1,8 @@
-package tasks;
+package task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Epic extends Task {
     private final List<Integer> subtaskIds = new ArrayList<>();
@@ -11,14 +12,21 @@ public class Epic extends Task {
     }
 
     public List<Integer> getSubtaskIds() {
-        return subtaskIds;
+        return new ArrayList<>(subtaskIds);
+    }
+    public void addSubtask(int id) { subtaskIds.add(id); }
+    public void removeSubtask(int id) { subtaskIds.remove((Integer) id); }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Epic)) return false;
+        Epic epic = (Epic) o;
+        return getId() == epic.getId();
     }
 
-    public void addSubtask(int subtaskId) {
-        subtaskIds.add(subtaskId);
-    }
-
-    public void removeSubtask(int subtaskId) {
-        subtaskIds.remove((Integer) subtaskId);
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

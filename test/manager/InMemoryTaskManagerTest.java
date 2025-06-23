@@ -2,9 +2,10 @@ package manager;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import task.*;
-
-import java.util.List;
+import task.Task;
+import task.Epic;
+import task.Subtask;
+import task.Status;
 
 import static org.junit.jupiter.api.Assertions.*;
 
