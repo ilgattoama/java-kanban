@@ -28,12 +28,12 @@ public class Main {
         taskManager.updateSubtask(subtask1);
 
         System.out.println("СПИСОК ЗАДАЧ:");
-        System.out.println("\nПростые задачи:");
+        System.out.println("Простые задачи:");
         for (Task task : taskManager.getTasks()) {
             System.out.println(task.getName() + " - " + getStatus(task.getStatus()));
         }
 
-        System.out.println("\nСложные задачи:");
+        System.out.println("Сложные задачи:");
         for (Epic epic : taskManager.getEpics()) {
             System.out.println(epic.getName() + " - " + getStatus(epic.getStatus()));
             System.out.println("  Подзадачи:");
