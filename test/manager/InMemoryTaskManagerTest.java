@@ -2,10 +2,9 @@ package manager;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tasks.Task;
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Status;
+import task.*;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,9 +19,14 @@ class InMemoryTaskManagerTest {
 
     @Test
     void createAndRetrieveTasksById() {
-        Task task = manager.createTask(new Task(0, "Task", "Desc", Status.NEW));
-        Epic epic = manager.createEpic(new Epic(0, "Epic", "Desc"));
-        Subtask sub = manager.createSubtask(new Subtask(0, "Sub", "Desc", Status.NEW, epic));
+        Task task = new Task(0, "Task", "Desc", Status.NEW);
+        manager.createTask(task);
+
+        Epic epic = new Epic(0, "Epic", "Desc");
+        manager.createEpic(epic);
+
+        Subtask sub = new Subtask(0, "Sub", "Desc", Status.NEW, epic.getId());
+        manager.createSubtask(sub);
 
         assertEquals(task, manager.getTaskById(task.getId()));
         assertEquals(epic, manager.getEpicById(epic.getId()));
@@ -30,25 +34,34 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void preventIdConflictBetweenManualAndGenerated() {
-        Task t1 = manager.createTask(new Task(999, "Manual", "Desc", Status.NEW));
-        Task t2 = manager.createTask(new Task(0, "Generated", "Desc", Status.NEW));
+    void taskIdGenerationShouldNotConflictWithManualId() {
+        Task t1 = new Task(999, "Manual", "Desc", Status.NEW);
+        manager.createTask(t1);
+
+        Task t2 = new Task(0, "Generated", "Desc", Status.NEW);
+        manager.createTask(t2);
+
         assertNotEquals(t1.getId(), t2.getId());
     }
 
     @Test
-    void taskFieldsShouldNotChangeAfterAdding() {
+    void addedTaskShouldRemainUnchanged() {
         Task task = new Task(0, "Immutable", "Test", Status.NEW);
-        Task added = manager.createTask(task);
-        assertEquals("Immutable", added.getName());
-        assertEquals("Test", added.getDescription());
-        assertEquals(Status.NEW, added.getStatus());
+        manager.createTask(task);
+
+        assertEquals("Immutable", task.getName());
+        assertEquals("Test", task.getDescription());
+        assertEquals(Status.NEW, task.getStatus());
     }
 
     @Test
-    void subtaskShouldNotBeItsOwnEpic() {
-        Epic epic = manager.createEpic(new Epic(0, "Epic", "Desc"));
-        Subtask subtask = new Subtask(0, "Sub", "Desc", Status.NEW, epic);
-        assertNotEquals(subtask.getId(), subtask.getEpic().getId());
+    void subtaskShouldNotHaveSameIdAsEpic() {
+        Epic epic = new Epic(0, "Epic", "Desc");
+        manager.createEpic(epic);
+
+        Subtask subtask = new Subtask(0, "Sub", "Desc", Status.NEW, epic.getId());
+        manager.createSubtask(subtask);
+
+        assertNotEquals(subtask.getId(), epic.getId());
     }
 }

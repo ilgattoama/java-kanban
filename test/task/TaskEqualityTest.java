@@ -1,10 +1,6 @@
 package task;
 
 import org.junit.jupiter.api.Test;
-import tasks.Task;
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Status;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,8 +23,8 @@ public class TaskEqualityTest {
     @Test
     void subtasksWithSameIdAreEqual() {
         Epic epic = new Epic(3, "Epic", "Desc");
-        Subtask s1 = new Subtask(4, "Sub", "Desc", Status.NEW, epic);
-        Subtask s2 = new Subtask(4, "Different", "Other", Status.DONE, epic);
+        Subtask s1 = new Subtask(4, "Sub", "Desc", Status.NEW, epic.getId());
+        Subtask s2 = new Subtask(4, "Different", "Other", Status.DONE, epic.getId());
         assertEquals(s1, s2);
     }
 }
