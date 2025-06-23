@@ -17,8 +17,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    @DisplayName("Добавление задачи в историю")
-    void shouldAddTaskToHistory() {
+    void addTaskToHistory() {
         Task task = new Task(1, "Помыть посуду", "", Status.NEW);
         historyManager.add(task);
 
@@ -28,8 +27,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    @DisplayName("Удаление задачи из истории")
-    void shouldRemoveTaskFromHistory() {
+    void removeTaskFromHistory() {
         Task task1 = new Task(1, "Задача 1", "", Status.NEW);
         Task task2 = new Task(2, "Задача 2", "", Status.NEW);
 
@@ -43,8 +41,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    @DisplayName("История должна сохранять порядок добавления")
-    void shouldKeepInsertionOrder() {
+    void keepInsertionOrder() {
         Task task1 = new Task(1, "Первая", "", Status.NEW);
         Task task2 = new Task(2, "Вторая", "", Status.NEW);
 
@@ -58,8 +55,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    @DisplayName("Дубликаты должны заменяться")
-    void shouldReplaceDuplicates() {
+    void replaceDuplicates() {
         Task task1 = new Task(1, "Старая версия", "", Status.NEW);
         Task task2 = new Task(1, "Новая версия", "", Status.DONE);
 
