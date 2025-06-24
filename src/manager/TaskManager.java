@@ -1,9 +1,8 @@
 package manager;
 
-import tasks.Task;
-import tasks.Epic;
-import tasks.Subtask;
-
+import task.Task;
+import task.Epic;
+import task.Subtask;
 import java.util.List;
 
 public interface TaskManager {

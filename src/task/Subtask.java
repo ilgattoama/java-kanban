@@ -18,8 +18,8 @@ public class Subtask extends Task {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Subtask)) return false;
-        Subtask that = (Subtask) o;
-        return getId() == that.getId();
+        Subtask subtask = (Subtask) o;
+        return getId() == subtask.getId();
     }
 
     @Override

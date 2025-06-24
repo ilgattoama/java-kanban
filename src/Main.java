@@ -1,9 +1,9 @@
 import manager.TaskManager;
 import manager.Managers;
-import tasks.Epic;
-import tasks.Status;
-import tasks.Subtask;
-import tasks.Task;
+import task.Epic;
+import task.Status;
+import task.Subtask;
+import task.Task;
 
 public class Main {
     public static void main(String[] args) {
@@ -46,13 +46,9 @@ public class Main {
     }
 
     private static String getStatus(Status status) {
-        if (status == Status.NEW) {
-            return "Не начато";
-        } else if (status == Status.IN_PROGRESS) {
-            return "В работе";
-        } else if (status == Status.DONE) {
-            return "Выполнено";
-        }
+        if (status == Status.NEW) return "Не начато";
+        else if (status == Status.IN_PROGRESS) return "В работе";
+        else if (status == Status.DONE) return "Выполнено";
         return "";
     }
 }
