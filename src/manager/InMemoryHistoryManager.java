@@ -7,13 +7,21 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
+    private static final int MAX_HISTORY_SIZE = 10;
     private final List<Task> history = new ArrayList<>();
     private final Map<Integer, Task> taskMap = new HashMap<>();
 
     @Override
     public void add(Task task) {
         if (task == null) return;
+
         remove(task.getId());
+
+        if (history.size() >= MAX_HISTORY_SIZE) {
+            Task oldestTask = history.remove(0);
+            taskMap.remove(oldestTask.getId());
+        }
+
         history.add(task);
         taskMap.put(task.getId(), task);
     }
