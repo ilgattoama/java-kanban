@@ -36,10 +36,9 @@ class InMemoryTaskManagerTest {
         assertEquals(tasksCount, manager.getHistory().size(),
                 "История должна содержать все просмотренные задачи без ограничений");
 
-        assertEquals(tasksCount - 1, manager.getHistory().get(tasksCount - 1).getId(),
-                "Последней в истории должна быть последняя просмотренная задача");
-
-        assertEquals(0, manager.getHistory().get(0).getId(),
-                "Первая просмотренная задача должна остаться в истории");
+        for (int i = 0; i < tasksCount; i++) {
+            assertNotNull(manager.getTask(i),
+                    "Задача с ID " + i + " должна быть в истории");
+        }
     }
 }

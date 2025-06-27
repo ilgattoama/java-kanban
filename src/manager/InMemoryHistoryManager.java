@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private final Map<Integer, Task> historyMap = new LinkedHashMap<>() {
+    private final Map<Integer, Task> historyMap = new LinkedHashMap<Integer, Task>() {
         @Override
         protected boolean removeEldestEntry(Map.Entry<Integer, Task> eldest) {
             return false;
@@ -16,7 +16,11 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        if (task == null) return;
+        if (task == null || task.getId() == null) return;
+
+        if (historyMap.containsKey(task.getId())) {
+            historyMap.remove(task.getId());
+        }
 
         historyMap.put(task.getId(), task);
     }
