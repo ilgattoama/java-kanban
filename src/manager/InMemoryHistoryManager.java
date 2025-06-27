@@ -1,16 +1,16 @@
 package manager;
 
 import task.Task;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private final Map<Integer, Task> historyMap = new LinkedHashMap<Integer, Task>() {
         @Override
         protected boolean removeEldestEntry(Map.Entry<Integer, Task> eldest) {
-            return false; 
+            return false;
         }
     };
 
