@@ -28,6 +28,7 @@ class InMemoryTaskManagerTest {
             Task task = new Task(i, "Задача " + i, "", Status.NEW);
             manager.createTask(task);
             manager.getTask(task.getId());
+        }
 
         assertEquals(tasksCount, manager.getHistory().size(),
                 "История должна содержать все просмотренные задачи без ограничений");
