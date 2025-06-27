@@ -27,15 +27,19 @@ class InMemoryTaskManagerTest {
         for (int i = 0; i < tasksCount; i++) {
             Task task = new Task(i, "Задача " + i, "", Status.NEW);
             manager.createTask(task);
-            manager.getTask(task.getId());
+        }
+
+        for (int i = 0; i < tasksCount; i++) {
+            manager.getTask(i);
         }
 
         assertEquals(tasksCount, manager.getHistory().size(),
                 "История должна содержать все просмотренные задачи без ограничений");
 
-        assertTrue(manager.getHistory().contains(manager.getTask(0)),
-                "История должна сохранять старые задачи");
-        assertTrue(manager.getHistory().contains(manager.getTask(tasksCount - 1)),
-                "История должна сохранять новые задачи");
+        assertEquals(tasksCount - 1, manager.getHistory().get(tasksCount - 1).getId(),
+                "Последней в истории должна быть последняя просмотренная задача");
+
+        assertEquals(0, manager.getHistory().get(0).getId(),
+                "Первая просмотренная задача должна остаться в истории");
     }
 }

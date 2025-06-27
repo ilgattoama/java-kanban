@@ -2,33 +2,32 @@ package manager;
 
 import task.Task;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private final List<Task> history = new ArrayList<>();
-    private final Map<Integer, Task> taskMap = new HashMap<>();
+    private final Map<Integer, Task> historyMap = new LinkedHashMap<>() {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<Integer, Task> eldest) {
+            return false;
+        }
+    };
 
     @Override
     public void add(Task task) {
         if (task == null) return;
 
-        remove(task.getId());
-        history.add(task);
-        taskMap.put(task.getId(), task);
+        historyMap.put(task.getId(), task);
     }
 
     @Override
     public void remove(int id) {
-        Task task = taskMap.remove(id);
-        if (task != null) {
-            history.remove(task);
-        }
+        historyMap.remove(id);
     }
 
     @Override
     public List<Task> getHistory() {
-        return new ArrayList<>(history);
+        return new ArrayList<>(historyMap.values());
     }
 }
