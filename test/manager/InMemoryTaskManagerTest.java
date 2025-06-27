@@ -12,10 +12,8 @@ class InMemoryTaskManagerTest {
     @Test
     void addAndFindTasks() {
         TaskManager manager = Managers.getDefault();
-
         Task task = new Task(0, "Задача", "Описание", Status.NEW);
         manager.createTask(task);
-
         assertEquals(task, manager.getTask(task.getId()));
     }
 
@@ -34,10 +32,10 @@ class InMemoryTaskManagerTest {
         }
 
         assertEquals(tasksCount, manager.getHistory().size(),
-                "История должна содержать все просмотренные задачи без ограничений");
+                "История должна содержать все 15 просмотренных задач");
 
         for (int i = 0; i < tasksCount; i++) {
-            assertNotNull(manager.getTask(i),
+            assertTrue(manager.getHistory().contains(manager.getTask(i)),
                     "Задача с ID " + i + " должна быть в истории");
         }
     }

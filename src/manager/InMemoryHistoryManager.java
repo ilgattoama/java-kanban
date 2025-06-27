@@ -1,10 +1,10 @@
 package manager;
 
 import task.Task;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private final Map<Integer, Task> historyMap = new LinkedHashMap<Integer, Task>() {
@@ -18,9 +18,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     public void add(Task task) {
         if (task == null) return;
 
-        if (historyMap.containsKey(task.getId())) {
-            historyMap.remove(task.getId());
-        }
+        historyMap.remove(task.getId());
 
         historyMap.put(task.getId(), task);
     }
