@@ -20,19 +20,21 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void historySizeLimited() {
+    void historyShouldBeUnlimited() {
         TaskManager manager = Managers.getDefault();
+        final int tasksCount = 15;
 
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < tasksCount; i++) {
             Task task = new Task(i, "Задача " + i, "", Status.NEW);
             manager.createTask(task);
-            manager.getTask(task.getId()); // Добавляем в историю просмотров
-        }
+            manager.getTask(task.getId());
 
-        assertEquals(10, manager.getHistory().size(), "История должна ограничиваться 10 элементами");
+        assertEquals(tasksCount, manager.getHistory().size(),
+                "История должна содержать все просмотренные задачи без ограничений");
 
-        for (Task task : manager.getHistory()) {
-            assertTrue(task.getId() >= 5, "В истории должны быть только последние задачи");
-        }
+        assertTrue(manager.getHistory().contains(manager.getTask(0)),
+                "История должна сохранять старые задачи");
+        assertTrue(manager.getHistory().contains(manager.getTask(tasksCount - 1)),
+                "История должна сохранять новые задачи");
     }
 }
