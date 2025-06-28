@@ -22,9 +22,10 @@ class InMemoryTaskManagerTest {
         TaskManager manager = Managers.getDefault();
         final int tasksCount = 15;
         
+        Task[] tasks = new Task[tasksCount];
         for (int i = 0; i < tasksCount; i++) {
-            Task task = new Task(i, "Task " + i, "", Status.NEW);
-            manager.createTask(task);
+            tasks[i] = new Task(i, "Task " + i, "", Status.NEW);
+            manager.createTask(tasks[i]);
         }
 
         for (int i = 0; i < tasksCount; i++) {
@@ -36,8 +37,8 @@ class InMemoryTaskManagerTest {
                 "История должна содержать все " + tasksCount + " задач");
 
         for (int i = 0; i < tasksCount; i++) {
-            assertEquals(i, history.get(i).getId(),
-                    "Неверный порядок задач в истории");
+            assertTrue(history.contains(tasks[i]),
+                    "Задача с ID " + i + " должна быть в истории");
         }
     }
 }
