@@ -23,18 +23,17 @@ class InMemoryTaskManagerTest {
         final int tasksCount = 15;
 
         for (int i = 0; i < tasksCount; i++) {
-            Task task = new Task(i, "Задача " + i, "", Status.NEW);
+            Task task = new Task(i, "Task " + i, "", Status.NEW);
             manager.createTask(task);
-        }
-
-        for (int i = 0; i < tasksCount; i++) {
-            manager.getTask(i);
+            manager.getTask(task.getId());
         }
 
         assertEquals(tasksCount, manager.getHistory().size(),
-                "История должна содержать все 15 просмотренных задач");
+                "История должна содержать все " + tasksCount + " просмотренных задач");
 
         for (int i = 0; i < tasksCount; i++) {
+            assertNotNull(manager.getTask(i),
+                    "Задача с ID " + i + " должна быть доступна");
             assertTrue(manager.getHistory().contains(manager.getTask(i)),
                     "Задача с ID " + i + " должна быть в истории");
         }
