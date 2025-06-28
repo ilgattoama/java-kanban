@@ -11,7 +11,7 @@ class InMemoryTaskManagerTest {
     @Test
     void addAndFindTasks() {
         TaskManager manager = Managers.getDefault();
-        Task task = new Task(0, "Задача", "Описание", Status.NEW);
+        Task task = new Task(0, "Task", "Description", Status.NEW);
         manager.createTask(task);
         assertEquals(task, manager.getTask(task.getId()));
     }
@@ -20,13 +20,23 @@ class InMemoryTaskManagerTest {
     void historyShouldBeUnlimited() {
         TaskManager manager = Managers.getDefault();
         final int tasksCount = 15;
-
+        
         for (int i = 0; i < tasksCount; i++) {
             Task task = new Task(i, "Task " + i, "", Status.NEW);
             manager.createTask(task);
-            manager.getTask(i); // Добавляем в историю
         }
 
-        assertEquals(tasksCount, manager.getHistory().size());
+        for (int i = 0; i < tasksCount; i++) {
+            manager.getTask(i);
+        }
+
+        assertEquals(tasksCount, manager.getHistory().size(),
+                "История должна содержать все " + tasksCount + " задач");
+
+        for (int i = 0; i < tasksCount; i++) {
+            assertNotNull(manager.getTask(i), "Задача " + i + " не найдена");
+            assertTrue(manager.getHistory().contains(manager.getTask(i)),
+                    "Задача " + i + " отсутствует в истории");
+        }
     }
 }
