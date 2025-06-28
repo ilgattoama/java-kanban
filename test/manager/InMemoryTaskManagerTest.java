@@ -21,7 +21,7 @@ class InMemoryTaskManagerTest {
     void historyShouldBeUnlimited() {
         TaskManager manager = Managers.getDefault();
         final int tasksCount = 15;
-        
+
         Task[] tasks = new Task[tasksCount];
         for (int i = 0; i < tasksCount; i++) {
             tasks[i] = new Task(i, "Task " + i, "", Status.NEW);
