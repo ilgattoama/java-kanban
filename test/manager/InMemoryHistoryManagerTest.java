@@ -1,44 +1,47 @@
 package test.manager;
 
-import manager.TaskManager;
+import manager.HistoryManager;
 import manager.Managers;
 import task.Task;
 import task.Status;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class InMemoryTaskManagerTest {
-
+class InMemoryHistoryManagerTest {
     @Test
-    void addAndFindTasks() {
-        TaskManager manager = Managers.getDefault();
+    void add() {
+        HistoryManager manager = Managers.getDefaultHistory();
         Task task = new Task(0, "Задача", "Описание", Status.NEW);
-        manager.createTask(task);
-        assertEquals(task, manager.getTask(task.getId()));
+        manager.add(task);
+        assertEquals(1, manager.getHistory().size());
     }
 
     @Test
-    void historyShouldBeUnlimited() {
-        TaskManager manager = Managers.getDefault();
-        final int tasksCount = 15;
+    void remove() {
+        HistoryManager manager = Managers.getDefaultHistory();
+        Task task = new Task(0, "Задача", "Описание", Status.NEW);
+        manager.add(task);
+        manager.remove(0);
+        assertEquals(0, manager.getHistory().size());
+    }
 
-        for (int i = 0; i < tasksCount; i++) {
-            Task task = new Task(i, "Task " + i, "", Status.NEW);
-            manager.createTask(task);
-        }
+    @Test
+    void updateTask() {
+        HistoryManager manager = Managers.getDefaultHistory();
+        Task task1 = new Task(0, "Задача", "Описание", Status.NEW);
+        Task task2 = new Task(0, "Обновленная", "Описание", Status.DONE);
+        manager.add(task1);
+        manager.add(task2);
+        assertEquals(1, manager.getHistory().size());
+        assertEquals("Обновленная", manager.getHistory().get(0).getName());
+    }
 
-        for (int i = 0; i < tasksCount; i++) {
-            manager.getTask(i);
-        }
-
-        assertEquals(tasksCount, manager.getHistory().size(),
-                "История должна содержать все " + tasksCount + " просмотренных задач");
-
-        for (int i = 0; i < tasksCount; i++) {
-            final Task task = manager.getTask(i);
-            assertNotNull(task, "Задача с ID " + i + " должна быть доступна");
-            assertTrue(manager.getHistory().contains(task),
-                    "Задача с ID " + i + " должна быть в истории");
-        }
+    @Test
+    void addDuplicate() {
+        HistoryManager manager = Managers.getDefaultHistory();
+        Task task = new Task(0, "Задача", "Описание", Status.NEW);
+        manager.add(task);
+        manager.add(task);
+        assertEquals(1, manager.getHistory().size());
     }
 }
