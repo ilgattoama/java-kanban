@@ -3,6 +3,7 @@ package test.manager;
 import manager.TaskManager;
 import manager.Managers;
 import task.Task;
+import task.Status;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +26,7 @@ class InMemoryTaskManagerTest {
         List<Task> history = manager.getHistory();
         assertEquals(tasksCount, history.size(),
                 "История должна содержать все " + tasksCount + " задач");
-        
+
         for (int i = 1; i <= tasksCount; i++) {
             final int taskId = i;
             assertTrue(history.stream().anyMatch(t -> t.getId() == taskId),
