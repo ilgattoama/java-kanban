@@ -2,69 +2,37 @@ package task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Epic extends Task {
-    private final List<Subtask> subtasks;
+    private final List<Integer> subtaskIds = new ArrayList<>();
 
     public Epic(int id, String name, String description) {
         super(id, name, description, Status.NEW);
-        this.subtasks = new ArrayList<>();
     }
 
-    public List<Subtask> getSubtasks() {
-        return subtasks;
+    public List<Integer> getSubtaskIds() {
+        return new ArrayList<>(subtaskIds);
     }
 
-    public void addSubtask(Subtask subtask) {
-        subtasks.add(subtask);
-        recalculateStatus();
+    public void addSubtask(int id) {
+        subtaskIds.add(id);
     }
 
-    public void removeSubtask(Subtask subtask) {
-        subtasks.remove(subtask);
-        recalculateStatus();
-    }
-
-    public void clearSubtasks() {
-        subtasks.clear();
-        recalculateStatus();
-    }
-
-    public void recalculateStatus() {
-        if (subtasks.isEmpty()) {
-            setStatus(Status.NEW);
-            return;
-        }
-
-        boolean allNew = true;
-        boolean allDone = true;
-
-        for (Subtask sub : subtasks) {
-            if (sub.getStatus() != Status.NEW) {
-                allNew = false;
-            }
-            if (sub.getStatus() != Status.DONE) {
-                allDone = false;
-            }
-        }
-
-        if (allNew) {
-            setStatus(Status.NEW);
-        } else if (allDone) {
-            setStatus(Status.DONE);
-        } else {
-            setStatus(Status.IN_PROGRESS);
-        }
+    public void removeSubtask(int id) {
+        subtaskIds.remove((Integer) id);
     }
 
     @Override
-    public String toString() {
-        return "task.Epic{" +
-                "id=" + getId() +
-                ", name='" + getName() + '\'' +
-                ", description='" + getDescription() + '\'' +
-                ", status=" + getStatus() +
-                ", subtasks=" + subtasks +
-                '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Epic)) return false;
+        Epic epic = (Epic) o;
+        return getId() == epic.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }
