@@ -4,6 +4,7 @@ import task.Task;
 import task.Epic;
 import task.Subtask;
 import task.Status;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +32,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public int createTask(Task task) {
+    public void createTask(Task task) {
         task.setId(nextId++);
         tasks.put(task.getId(), task);
-        return task.getId();
     }
 
     @Override
