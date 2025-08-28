@@ -1,15 +1,17 @@
 package test.manager;
 
 import manager.FileBackedTaskManager;
-import manager.Manager;
 import task.Task;
 import task.Status;
+import task.Epic;
+import task.Subtask;
 import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedTaskManagerTest {
+
     @Test
     void saveAndLoadEmptyFile() throws IOException {
         File tempFile = File.createTempFile("test", ".csv");
@@ -19,14 +21,14 @@ class FileBackedTaskManagerTest {
 
         assertTrue(loadedManager.getTasks().isEmpty());
         assertTrue(loadedManager.getEpics().isEmpty());
-        assertTrue(loadedManger.getSubtasks().isEmpty());
+        assertTrue(loadedManager.getSubtasks().isEmpty());
 
         tempFile.delete();
     }
 
     @Test
     void saveAndLoadTasks() throws IOException {
-        File tempFile = File.creteTempFile("test", ".csv");
+        File tempFile = File.createTempFile("test", ".csv");
 
         FileBackedTaskManager manager = new FileBackedTaskManager(tempFile);
 
@@ -34,7 +36,7 @@ class FileBackedTaskManagerTest {
         Task task2 = new Task(0, "Task 2", "Description 2", Status.IN_PROGRESS);
 
         manager.createTask(task1);
-        manager.createTask(Task2);
+        manager.createTask(task2);
 
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
 
@@ -46,16 +48,16 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    void saveAndLoadEpicWirhSubtasks() throws IOException {
+    void saveAndLoadEpicWithSubtasks() throws IOException {
         File tempFile = File.createTempFile("test", ".csv");
 
         FileBackedTaskManager manager = new FileBackedTaskManager(tempFile);
 
-        task.Epic epic = new task.Epic(0, "Epic", "Descreption");
+        Epic epic = new Epic(0, "Epic", "Description");
         manager.createEpic(epic);
 
-        task.Subtask subtask1 = new task.Subtask(0, "Subtask 1", "Desc", Status.NEW, epic.getId());
-        task.Subtask subtask2 = new rask.Subtask(0, "Subtask 2", "Desc", Status.DONE, epic.getId());
+        Subtask subtask1 = new Subtask(0, "Subtask 1", "Desc", Status.NEW, epic.getId());
+        Subtask subtask2 = new Subtask(0, "Subtask 2", "Desc", Status.DONE, epic.getId());
 
         manager.createSubtask(subtask1);
         manager.createSubtask(subtask2);
