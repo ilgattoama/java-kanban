@@ -1,8 +1,14 @@
 package manager;
 
-import task.*;
+import task.Epic;
+import task.Status;
+import task.Subtask;
+import task.Task;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
@@ -18,21 +24,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             writer.write("id,type,name,status,description,epic");
             writer.newLine();
 
-            for (Task task : getTasks()) {
+            for (Task task : tasks.values()) {
                 writer.write(taskToString(task));
                 writer.newLine();
             }
 
-            for (Epic epic : getEpics()) {
+            for (Epic epic : epics.values()) {
                 writer.write(taskToString(epic));
                 writer.newLine();
             }
 
-            for (Subtask subtask : getSubtasks()) {
+            for (Subtask subtask : subtasks.values()) {
                 writer.write(taskToString(subtask));
                 writer.newLine();
             }
-
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка сохранения в файл", e);
         }
@@ -97,12 +102,28 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
                 Task task = manager.taskFromString(line);
 
-                    manager.createEpic((Epic) task);
+                if (task instanceof Epic) {
+                    manager.epics.put(task.getId(), (Epic) task);
                 } else if (task instanceof Subtask) {
-                    manager.createSubtask((Subtask) task);
+                    manager.subtasks.put(task.getId(), (Subtask) task);
                 } else {
-                    manager.createTask(task);
+                    manager.tasks.put(task.getId(), task);
                 }
+
+                if (task.getId() >= manager.nextId) {
+                    manager.nextId = task.getId() + 1;
+                }
+            }
+
+            for (Subtask subtask : manager.subtasks.values()) {
+                Epic epic = manager.epics.get(subtask.getEpicId());
+                if (epic != null) {
+                    epic.addSubtask(subtask.getId());
+                }
+            }
+
+            for (Epic epic : manager.epics.values()) {
+                manager.updateEpicStatus(epic);
             }
 
         } catch (IOException e) {
