@@ -29,9 +29,9 @@ class InMemoryTaskManagerTest {
         Subtask sub = new Subtask(0, "Sub", "Desc", Status.NEW, epic);
         manager.addSubtask(sub);
 
-        assertEquals(task, manager.getTaskById(task.getId()));
-        assertEquals(epic, manager.getEpicById(epic.getId()));
-        assertEquals(sub, manager.getSubtaskById(sub.getId()));
+        assertEquals(task, manager.getTask(task.getId()));
+        assertEquals(epic, manager.getEpic(epic.getId()));
+        assertEquals(sub, manager.getSubtask(sub.getId()));
     }
 
     @Test
