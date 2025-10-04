@@ -9,15 +9,25 @@ public class Main {
     public static void main(String[] args) {
         TaskManager taskManager = new InMemoryTaskManager();
 
-        Task task1 = taskManager.createTask(new Task(0, "Купить продукты", "Молоко, яйца", Status.NEW));
-        Task task2 = taskManager.createTask(new Task(0, "Позвонить врачу", "Записаться на приём", Status.NEW));
+        Task task1 = new Task(0, "Купить продукты", "Молоко, яйца", Status.NEW);
+        Task task2 = new Task(0, "Позвонить врачу", "Записаться на приём", Status.NEW);
 
-        Epic epic1 = taskManager.createEpic(new Epic(0, "Переезд", "Собрать и перевезти вещи"));
-        Epic epic2 = taskManager.createEpic(new Epic(0, "Отпуск", "Подготовка к отдыху"));
+        Epic epic1 = new Epic(0, "Переезд", "Собрать и перевезти вещи", Status.NEW);
+        Epic epic2 = new Epic(0, "Отпуск", "Подготовка к отдыху", Status.NEW);
 
-        Subtask sub1 = taskManager.createSubtask(new Subtask(0, "Собрать коробки", "Упаковать всё", Status.NEW, epic1));
-        Subtask sub2 = taskManager.createSubtask(new Subtask(0, "Упаковать кошку", "Кошка в переноске", Status.NEW, epic1));
-        Subtask sub3 = taskManager.createSubtask(new Subtask(0, "Купить билеты", "Самолёт туда-обратно", Status.NEW, epic2));
+        Subtask sub1 = new Subtask(0, "Собрать коробки", "Упаковать всё", Status.NEW, epic1);
+        Subtask sub2 = new Subtask(0, "Упаковать кошку", "Кошка в переноске", Status.NEW, epic1);
+        Subtask sub3 = new Subtask(0, "Купить билеты", "Самолёт туда-обратно", Status.NEW, epic2);
+
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+
+        taskManager.addEpic(epic1);
+        taskManager.addEpic(epic2);
+
+        taskManager.addSubtask(sub1);
+        taskManager.addSubtask(sub2);
+        taskManager.addSubtask(sub3);
 
         System.out.println("Задачи:");
         for (Task task : taskManager.getAllTasks()) {
@@ -34,6 +44,7 @@ public class Main {
             System.out.println(subtask);
         }
 
+        // Обновление статусов
         task1.setStatus(Status.DONE);
         taskManager.updateTask(task1);
 
@@ -61,11 +72,11 @@ public class Main {
             System.out.println(subtask);
         }
 
-        taskManager.deleteSubtask(sub1.getId());
-        taskManager.deleteEpic(epic2.getId());
+        // Удаление подзадачи и эпика
+        taskManager.deleteSubtaskById(sub1.getId());
+        taskManager.deleteEpicById(epic2.getId());
 
         System.out.println("После удаления подзадачи и эпика:");
-
         System.out.println("Задачи:");
         for (Task task : taskManager.getAllTasks()) {
             System.out.println(task);
