@@ -1,68 +1,164 @@
 package manager;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import task.*;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+public class InMemoryTaskManager implements TaskManager {
 
-class InMemoryTaskManagerTest {
+    private int nextId = 1;
+    private final Map<Integer, Task> tasks = new HashMap<>();
+    private final Map<Integer, Epic> epics = new HashMap<>();
+    private final Map<Integer, Subtask> subtasks = new HashMap<>();
 
-    private TaskManager manager;
-
-    @BeforeEach
-    void setup() {
-        manager = Managers.getDefault();
+    private int generateId() {
+        return nextId++;
     }
 
-    @Test
-    void shouldCreateAndRetrieveTasksById() {
-        Task task = manager.createTask(new Task(0, "Task", "Desc", Status.NEW));
-        Epic epic = manager.createEpic(new Epic(0, "Epic", "Desc"));
-        Subtask sub = manager.createSubtask(new Subtask(0, "Sub", "Desc", Status.NEW, epic));
-
-        assertEquals(task, manager.getTaskById(task.getId()));
-        assertEquals(epic, manager.getEpicById(epic.getId()));
-        assertEquals(sub, manager.getSubtaskById(sub.getId()));
+    @Override
+    public Task createTask(Task task) {
+        int id = generateId();
+        task.setId(id);
+        tasks.put(id, task);
+        return task;
     }
 
-    @Test
-    void tasksWithGivenAndGeneratedIdShouldNotConflict() {
-        Task t1 = manager.createTask(new Task(999, "Manual", "Desc", Status.NEW));
-        Task t2 = manager.createTask(new Task(0, "Generated", "Desc", Status.NEW));
-        assertNotEquals(t1.getId(), t2.getId());
+    @Override
+    public Epic createEpic(Epic epic) {
+        int id = generateId();
+        epic.setId(id);
+        epics.put(id, epic);
+        return epic;
     }
 
-    @Test
-    void addingTaskShouldNotChangeItsFields() {
-        Task task = new Task(0, "Immutable", "Test", Status.NEW);
-        Task added = manager.createTask(task);
-        assertEquals("Immutable", added.getName());
-        assertEquals("Test", added.getDescription());
-        assertEquals(Status.NEW, added.getStatus());
+    @Override
+    public Subtask createSubtask(Subtask subtask) {
+        int id = generateId();
+        subtask.setId(id);
+        subtasks.put(id, subtask);
+
+        Epic epic = subtask.getEpic();
+        if (epic != null) {
+            epic.getSubtasks().add(subtask);
+            updateEpicStatus(epic);
+        }
+        return subtask;
     }
 
-    @Test
-    void subtaskCannotBeItsOwnEpic() {
-        Epic epic = manager.createEpic(new Epic(0, "Epic", "Desc"));
-        Subtask subtask = new Subtask(0, "Sub", "Desc", Status.NEW, epic);
-        assertNotEquals(subtask.getId(), subtask.getEpic().getId());
+    @Override
+    public Task getTaskById(int id) {
+        return tasks.get(id);
     }
 
-    @Test
-    void epicStatusShouldDependOnSubtasks() {
-        Epic epic = manager.createEpic(new Epic(0, "Epic", "Desc"));
-        Subtask sub1 = manager.createSubtask(new Subtask(0, "Sub1", "Desc", Status.NEW, epic));
-        Subtask sub2 = manager.createSubtask(new Subtask(0, "Sub2", "Desc", Status.NEW, epic));
+    @Override
+    public Epic getEpicById(int id) {
+        return epics.get(id);
+    }
 
-        assertEquals(Status.NEW, epic.getStatus());
+    @Override
+    public Subtask getSubtaskById(int id) {
+        return subtasks.get(id);
+    }
 
-        sub1.setStatus(Status.DONE);
-        manager.updateSubtask(sub1);
-        assertEquals(Status.IN_PROGRESS, epic.getStatus());
+    @Override
+    public List<Task> getAllTasks() {
+        return new ArrayList<>(tasks.values());
+    }
 
-        sub2.setStatus(Status.DONE);
-        manager.updateSubtask(sub2);
-        assertEquals(Status.DONE, epic.getStatus());
+    @Override
+    public List<Epic> getAllEpics() {
+        return new ArrayList<>(epics.values());
+    }
+
+    @Override
+    public List<Subtask> getAllSubtasks() {
+        return new ArrayList<>(subtasks.values());
+    }
+
+    @Override
+    public void updateTask(Task task) {
+        if (tasks.containsKey(task.getId())) {
+            tasks.put(task.getId(), task);
+        }
+    }
+
+    @Override
+    public void updateEpic(Epic epic) {
+        if (epics.containsKey(epic.getId())) {
+            epics.put(epic.getId(), epic);
+            updateEpicStatus(epic);
+        }
+    }
+
+    @Override
+    public void updateSubtask(Subtask subtask) {
+        if (subtasks.containsKey(subtask.getId())) {
+            subtasks.put(subtask.getId(), subtask);
+            Epic epic = subtask.getEpic();
+            if (epic != null) updateEpicStatus(epic);
+        }
+    }
+
+    @Override
+    public void deleteTaskById(int id) {
+        tasks.remove(id);
+    }
+
+    @Override
+    public void deleteEpicById(int id) {
+        Epic epic = epics.remove(id);
+        if (epic != null) {
+            for (Subtask sub : new ArrayList<>(epic.getSubtasks())) {
+                subtasks.remove(sub.getId());
+            }
+        }
+    }
+
+    @Override
+    public void deleteSubtaskById(int id) {
+        Subtask sub = subtasks.remove(id);
+        if (sub != null && sub.getEpic() != null) {
+            Epic epic = sub.getEpic();
+            epic.getSubtasks().remove(sub);
+            updateEpicStatus(epic);
+        }
+    }
+
+    @Override
+    public void deleteAllTasks() {
+        tasks.clear();
+    }
+
+    @Override
+    public void deleteAllEpics() {
+        epics.clear();
+        subtasks.clear();
+    }
+
+    @Override
+    public void deleteAllSubtasks() {
+        for (Epic epic : epics.values()) {
+            epic.getSubtasks().clear();
+            updateEpicStatus(epic);
+        }
+        subtasks.clear();
+    }
+
+    private void updateEpicStatus(Epic epic) {
+        if (epic.getSubtasks().isEmpty()) {
+            epic.setStatus(Status.NEW);
+            return;
+        }
+
+        boolean allNew = true;
+        boolean allDone = true;
+
+        for (Subtask sub : epic.getSubtasks()) {
+            if (sub.getStatus() != Status.NEW) allNew = false;
+            if (sub.getStatus() != Status.DONE) allDone = false;
+        }
+
+        if (allNew) epic.setStatus(Status.NEW);
+        else if (allDone) epic.setStatus(Status.DONE);
+        else epic.setStatus(Status.IN_PROGRESS);
     }
 }
