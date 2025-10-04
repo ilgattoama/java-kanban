@@ -6,34 +6,63 @@ import task.Epic;
 import task.Status;
 import task.Subtask;
 import task.Task;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
+
     private InMemoryTaskManager manager;
 
     @BeforeEach
-    void setUp() {
+    void setup() {
         manager = new InMemoryTaskManager();
     }
 
     @Test
-    void shouldAddAndGetTask() {
-        Task task = new Task(0, "Test task", "Description", Status.NEW);
+    void shouldCreateAndRetrieveTasksById() {
+        Task task = new Task(0, "Task", "Desc", Status.NEW);
         manager.addTask(task);
-        List<Task> tasks = manager.getAllTasks();
-        assertEquals(1, tasks.size());
-        assertEquals(task.getName(), tasks.get(0).getName());
+
+        Epic epic = new Epic(0, "Epic", "Desc");
+        manager.addEpic(epic);
+
+        Subtask sub = new Subtask(0, "Sub", "Desc", Status.NEW, epic);
+        manager.addSubtask(sub);
+
+        assertEquals(task, manager.getTaskById(task.getId()));
+        assertEquals(epic, manager.getEpicById(epic.getId()));
+        assertEquals(sub, manager.getSubtaskById(sub.getId()));
     }
 
     @Test
-    void shouldAddAndGetEpicWithSubtask() {
-        Epic epic = new Epic(0, "Epic", "Epic description", Status.NEW);
+    void tasksWithGivenAndGeneratedIdShouldNotConflict() {
+        Task t1 = new Task(999, "Manual", "Desc", Status.NEW);
+        manager.addTask(t1);
+
+        Task t2 = new Task(0, "Generated", "Desc", Status.NEW);
+        manager.addTask(t2);
+
+        assertNotEquals(t1.getId(), t2.getId());
+    }
+
+    @Test
+    void addingTaskShouldNotChangeItsFields() {
+        Task task = new Task(0, "Immutable", "Test", Status.NEW);
+        manager.addTask(task);
+
+        assertEquals("Immutable", task.getName());
+        assertEquals("Test", task.getDescription());
+        assertEquals(Status.NEW, task.getStatus());
+    }
+
+    @Test
+    void subtaskCannotBeItsOwnEpic() {
+        Epic epic = new Epic(0, "Epic", "Desc");
         manager.addEpic(epic);
-        Subtask subtask = new Subtask(0, "Sub", "Sub desc", Status.NEW, epic.getId());
+
+        Subtask subtask = new Subtask(0, "Sub", "Desc", Status.NEW, epic);
         manager.addSubtask(subtask);
-        assertEquals(1, manager.getAllEpics().size());
-        assertEquals(1, manager.getAllSubtasks().size());
+
+        assertNotEquals(subtask.getId(), subtask.getEpic().getId());
     }
 }
