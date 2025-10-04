@@ -1,7 +1,6 @@
 package manager;
 
 import task.Task;
-
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
@@ -11,13 +10,8 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void add(Task task) {
         if (task == null) return;
-
         remove(task.getId());
-
-        if (history.size() >= HISTORY_LIMIT) {
-            history.removeFirst();
-        }
-
+        if (history.size() >= HISTORY_LIMIT) history.removeFirst();
         history.addLast(task);
     }
 

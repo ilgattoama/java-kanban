@@ -4,8 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import task.*;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
@@ -14,7 +12,7 @@ class InMemoryTaskManagerTest {
 
     @BeforeEach
     void setup() {
-        manager = Managers.getDefault(); // Используем интерфейс TaskManager
+        manager = Managers.getDefault();
     }
 
     @Test
@@ -49,5 +47,22 @@ class InMemoryTaskManagerTest {
         Epic epic = manager.createEpic(new Epic(0, "Epic", "Desc"));
         Subtask subtask = new Subtask(0, "Sub", "Desc", Status.NEW, epic);
         assertNotEquals(subtask.getId(), subtask.getEpic().getId());
+    }
+
+    @Test
+    void epicStatusShouldDependOnSubtasks() {
+        Epic epic = manager.createEpic(new Epic(0, "Epic", "Desc"));
+        Subtask sub1 = manager.createSubtask(new Subtask(0, "Sub1", "Desc", Status.NEW, epic));
+        Subtask sub2 = manager.createSubtask(new Subtask(0, "Sub2", "Desc", Status.NEW, epic));
+
+        assertEquals(Status.NEW, epic.getStatus());
+
+        sub1.setStatus(Status.DONE);
+        manager.updateSubtask(sub1);
+        assertEquals(Status.IN_PROGRESS, epic.getStatus());
+
+        sub2.setStatus(Status.DONE);
+        manager.updateSubtask(sub2);
+        assertEquals(Status.DONE, epic.getStatus());
     }
 }
