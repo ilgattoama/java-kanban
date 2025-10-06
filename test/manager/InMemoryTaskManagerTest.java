@@ -24,7 +24,7 @@ public class InMemoryTaskManagerTest {
 
         List<Task> tasks = manager.getAllTasks();
         assertEquals(1, tasks.size());
-        assertEquals("Test Task", tasks.get(0).getTitle());
+        assertEquals("Test Task", tasks.get(0).getName());
 
         Task fetched = manager.getTask(task.getId());
         assertNotNull(fetched);
