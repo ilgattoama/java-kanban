@@ -30,25 +30,6 @@ public class Task {
     }
 
     @Override
-    public String toString() {
-        return id + "," + getType() + "," + name + "," + status + "," + description;
-    }
-}
-
-
-public void setDescription(String description) {  // полезно добавить
-        this.description = description;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;

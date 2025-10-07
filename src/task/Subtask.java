@@ -1,7 +1,7 @@
 package task;
 
 public class Subtask extends Task {
-    private final int epicId; // храним id эпика, а не сам объект
+    private final int epicId;
 
     public Subtask(int id, String name, String description, Status status, int epicId) {
         super(id, name, description, status);
@@ -15,5 +15,16 @@ public class Subtask extends Task {
     @Override
     public TaskType getType() {
         return TaskType.SUBTASK;
+    }
+
+    @Override
+    public String toString() {
+        return "Subtask{" +
+                "id=" + getId() +
+                ", name='" + getName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", status=" + getStatus() +
+                ", epicId=" + epicId +
+                '}';
     }
 }
