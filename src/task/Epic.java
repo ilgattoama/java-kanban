@@ -30,7 +30,7 @@ public class Epic extends Task {
         recalculateStatus();
     }
 
-    private void recalculateStatus() {
+    public void recalculateStatus() {
         if (subtasks.isEmpty()) {
             setStatus(Status.NEW);
             return;
@@ -57,7 +57,6 @@ public class Epic extends Task {
         }
     }
 
-    @Override
     public TaskType getType() {
         return TaskType.EPIC;
     }
@@ -69,7 +68,7 @@ public class Epic extends Task {
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() +
-                ", subtasks=" + subtasks +
+                ", subtasksCount=" + subtasks.size() +
                 '}';
     }
 }
