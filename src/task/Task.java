@@ -1,5 +1,7 @@
 package task;
 
+import task.TaskType;
+
 public class Task {
     private int id;
     private String name;
