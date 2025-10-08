@@ -12,31 +12,37 @@ public class Main {
         Task task1 = new Task(0, "Купить продукты", "Молоко, яйца", Status.NEW);
         Task task2 = new Task(0, "Позвонить врачу", "Записаться на приём", Status.NEW);
 
-        Epic epic1 = new Epic(0, "Переезд", "Собрать и перевезти вещи");
-        Epic epic2 = new Epic(0, "Отпуск", "Подготовка к отдыху");
-
-        Subtask sub1 = new Subtask(0, "Собрать коробки", "Упаковать всё", Status.NEW, epic1);
-        Subtask sub2 = new Subtask(0, "Упаковать кошку", "Кошка в переноске", Status.NEW, epic1);
-        Subtask sub3 = new Subtask(0, "Купить билеты", "Самолёт туда-обратно", Status.NEW, epic2);
-
         taskManager.addTask(task1);
         taskManager.addTask(task2);
 
+        Epic epic1 = new Epic(0, "Переезд", "Собрать и перевезти вещи");
+        Epic epic2 = new Epic(0, "Отпуск", "Подготовка к отдыху");
+
         taskManager.addEpic(epic1);
         taskManager.addEpic(epic2);
+
+        Subtask sub1 = new Subtask(0, "Собрать коробки", "Упаковать всё", Status.NEW, epic1.getId());
+        Subtask sub2 = new Subtask(0, "Упаковать кошку", "Кошка в переноске", Status.NEW, epic1.getId());
+        Subtask sub3 = new Subtask(0, "Купить билеты", "Самолёт туда-обратно", Status.NEW, epic2.getId());
 
         taskManager.addSubtask(sub1);
         taskManager.addSubtask(sub2);
         taskManager.addSubtask(sub3);
 
         System.out.println("Задачи:");
-        for (Task task : taskManager.getAllTasks()) System.out.println(task);
+        for (Task task : taskManager.getAllTasks()) {
+            System.out.println(task);
+        }
 
         System.out.println("Эпики:");
-        for (Epic epic : taskManager.getAllEpics()) System.out.println(epic);
+        for (Epic epic : taskManager.getAllEpics()) {
+            System.out.println(epic);
+        }
 
         System.out.println("Подзадачи:");
-        for (Subtask subtask : taskManager.getAllSubtasks()) System.out.println(subtask);
+        for (Subtask subtask : taskManager.getAllSubtasks()) {
+            System.out.println(subtask);
+        }
 
         task1.setStatus(Status.DONE);
         sub1.setStatus(Status.IN_PROGRESS);
@@ -44,17 +50,29 @@ public class Main {
 
         epic1.recalculateStatus();
 
-        System.out.println("После обновления статусов:");
-        for (Task task : taskManager.getAllTasks()) System.out.println(task);
-        for (Epic epic : taskManager.getAllEpics()) System.out.println(epic);
-        for (Subtask subtask : taskManager.getAllSubtasks()) System.out.println(subtask);
+        System.out.println("\nПосле обновления статусов:");
+        for (Task task : taskManager.getAllTasks()) {
+            System.out.println(task);
+        }
+        for (Epic epic : taskManager.getAllEpics()) {
+            System.out.println(epic);
+        }
+        for (Subtask subtask : taskManager.getAllSubtasks()) {
+            System.out.println(subtask);
+        }
 
         taskManager.deleteSubtaskById(sub1.getId());
         taskManager.deleteEpicById(epic2.getId());
 
-        System.out.println("После удаления подзадачи и эпика:");
-        for (Task task : taskManager.getAllTasks()) System.out.println(task);
-        for (Epic epic : taskManager.getAllEpics()) System.out.println(epic);
-        for (Subtask subtask : taskManager.getAllSubtasks()) System.out.println(subtask);
+        System.out.println("\nПосле удаления подзадачи и эпика:");
+        for (Task task : taskManager.getAllTasks()) {
+            System.out.println(task);
+        }
+        for (Epic epic : taskManager.getAllEpics()) {
+            System.out.println(epic);
+        }
+        for (Subtask subtask : taskManager.getAllSubtasks()) {
+            System.out.println(subtask);
+        }
     }
 }
