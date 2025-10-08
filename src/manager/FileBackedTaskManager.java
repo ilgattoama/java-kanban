@@ -92,9 +92,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         try {
             List<String> lines = Files.readAllLines(file.toPath());
-            
+
+            // Сначала загружаем эпики
             for (int i = 1; i < lines.size(); i++) {
-                String line = lines.get(i);
+                String line = lines.get(i).trim();
                 String[] fields = line.split(",");
                 TaskType type = TaskType.valueOf(fields[1]);
                 if (type == TaskType.EPIC) {
@@ -104,8 +105,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
 
+            // Потом загружаем задачи и подзадачи
             for (int i = 1; i < lines.size(); i++) {
-                Task task = fromString(lines.get(i), epicsMap);
+                Task task = fromString(lines.get(i).trim(), epicsMap);
                 if (task == null) continue;
 
                 if (task.getType() == TaskType.TASK) {
@@ -133,16 +135,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         switch (type) {
             case TASK:
                 return new Task(id, name, description, status);
-
             case EPIC:
                 return new Epic(id, name, description);
-
             case SUBTASK:
                 int epicId = Integer.parseInt(fields[5]);
                 Epic epic = epicsMap.get(epicId);
                 if (epic == null) return null;
                 return new Subtask(id, name, description, status, epic);
-
             default:
                 throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
         }
