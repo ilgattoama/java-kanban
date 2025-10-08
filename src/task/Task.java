@@ -1,7 +1,5 @@
 package task;
 
-import task.TaskType;
-
 public class Task {
     private int id;
     private String name;
@@ -53,12 +51,8 @@ public class Task {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
         Task task = (Task) obj;
         return id == task.id;
     }

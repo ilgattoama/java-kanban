@@ -1,19 +1,18 @@
 package task;
 
-import task.TaskType;
-
 public class Subtask extends Task {
-    private final int epicId;
+    private final Epic epic;
 
-    public Subtask(int id, String name, String description, Status status, int epicId) {
+    public Subtask(int id, String name, String description, Status status, Epic epic) {
         super(id, name, description, status);
-        this.epicId = epicId;
+        this.epic = epic;
     }
 
-    public int getEpicId() {
-        return epicId;
+    public Epic getEpic() {
+        return epic;
     }
 
+    @Override
     public TaskType getType() {
         return TaskType.SUBTASK;
     }
@@ -25,7 +24,7 @@ public class Subtask extends Task {
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() +
-                ", epicId=" + epicId +
+                ", epic=" + epic.getName() +
                 '}';
     }
 }

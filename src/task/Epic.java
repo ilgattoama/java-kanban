@@ -1,7 +1,5 @@
 package task;
 
-import task.TaskType;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,12 +40,8 @@ public class Epic extends Task {
         boolean allDone = true;
 
         for (Subtask sub : subtasks) {
-            if (sub.getStatus() != Status.NEW) {
-                allNew = false;
-            }
-            if (sub.getStatus() != Status.DONE) {
-                allDone = false;
-            }
+            if (sub.getStatus() != Status.NEW) allNew = false;
+            if (sub.getStatus() != Status.DONE) allDone = false;
         }
 
         if (allNew) {
@@ -59,6 +53,7 @@ public class Epic extends Task {
         }
     }
 
+    @Override
     public TaskType getType() {
         return TaskType.EPIC;
     }
@@ -70,7 +65,7 @@ public class Epic extends Task {
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() +
-                ", subtasksCount=" + subtasks.size() +
+                ", subtasks=" + subtasks +
                 '}';
     }
 }
