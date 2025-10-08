@@ -30,10 +30,9 @@ public class InMemoryTaskManager implements TaskManager {
         subtask.setId(generateId());
         subtasks.put(subtask.getId(), subtask);
 
-        Epic epic = epics.get(subtask.getEpicId());
-        if (epic != null) {
-            epic.getSubtasks().add(subtask);
-            updateEpicStatus(epic);
+        Epic epic = subtask.getEpic();
+        if (epic != null && epics.containsKey(epic.getId())) {
+            epics.get(epic.getId()).addSubtask(subtask);
         }
     }
 
@@ -70,40 +69,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteSubtaskById(int id) {
         Subtask sub = subtasks.remove(id);
-        if (sub != null) {
-            Epic epic = epics.get(sub.getEpicId());
+        if (sub != null && sub.getEpic() != null) {
+            Epic epic = epics.get(sub.getEpic().getId());
             if (epic != null) {
-                epic.getSubtasks().remove(sub);
-                updateEpicStatus(epic);
+                epic.removeSubtask(sub);
             }
-        }
-    }
-
-    private void updateEpicStatus(Epic epic) {
-        List<Subtask> subList = epic.getSubtasks();
-        if (subList.isEmpty()) {
-            epic.setStatus(Status.NEW);
-            return;
-        }
-
-        boolean allNew = true;
-        boolean allDone = true;
-
-        for (Subtask sub : subList) {
-            if (sub.getStatus() != Status.NEW) {
-                allNew = false;
-            }
-            if (sub.getStatus() != Status.DONE) {
-                allDone = false;
-            }
-        }
-
-        if (allDone) {
-            epic.setStatus(Status.DONE);
-        } else if (allNew) {
-            epic.setStatus(Status.NEW);
-        } else {
-            epic.setStatus(Status.IN_PROGRESS);
         }
     }
 

@@ -44,13 +44,9 @@ public class Epic extends Task {
             if (sub.getStatus() != Status.DONE) allDone = false;
         }
 
-        if (allNew) {
-            setStatus(Status.NEW);
-        } else if (allDone) {
-            setStatus(Status.DONE);
-        } else {
-            setStatus(Status.IN_PROGRESS);
-        }
+        if (allDone) setStatus(Status.DONE);
+        else if (allNew) setStatus(Status.NEW);
+        else setStatus(Status.IN_PROGRESS);
     }
 
     @Override
@@ -69,3 +65,4 @@ public class Epic extends Task {
                 '}';
     }
 }
+
