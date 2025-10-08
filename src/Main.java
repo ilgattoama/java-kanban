@@ -21,9 +21,10 @@ public class Main {
         taskManager.addEpic(epic1);
         taskManager.addEpic(epic2);
 
-        Subtask sub1 = new Subtask(0, "Собрать коробки", "Упаковать всё", Status.NEW, epic1.getId());
-        Subtask sub2 = new Subtask(0, "Упаковать кошку", "Кошка в переноске", Status.NEW, epic1.getId());
-        Subtask sub3 = new Subtask(0, "Купить билеты", "Самолёт туда-обратно", Status.NEW, epic2.getId());
+        // Передаем сами объекты Epic вместо их ID
+        Subtask sub1 = new Subtask(0, "Собрать коробки", "Упаковать всё", Status.NEW, epic1);
+        Subtask sub2 = new Subtask(0, "Упаковать кошку", "Кошка в переноске", Status.NEW, epic1);
+        Subtask sub3 = new Subtask(0, "Купить билеты", "Самолёт туда-обратно", Status.NEW, epic2);
 
         taskManager.addSubtask(sub1);
         taskManager.addSubtask(sub2);
