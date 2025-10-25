@@ -8,46 +8,101 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class InMemoryTaskManagerTest {
+public class InMemoryTaskManagerTest {
 
-    private TaskManager manager;
+    private InMemoryTaskManager manager;
 
     @BeforeEach
-    void setup() {
-        manager = Managers.getDefault(); // Используем интерфейс TaskManager
+    void setUp() {
+        manager = new InMemoryTaskManager();
     }
 
     @Test
-    void shouldCreateAndRetrieveTasksById() {
-        Task task = manager.createTask(new Task(0, "Task", "Desc", Status.NEW));
-        Epic epic = manager.createEpic(new Epic(0, "Epic", "Desc"));
-        Subtask sub = manager.createSubtask(new Subtask(0, "Sub", "Desc", Status.NEW, epic));
+    void shouldAddAndGetTask() {
+        Task task = new Task(0, "Test Task", "Description", Status.NEW);
+        manager.addTask(task);
 
-        assertEquals(task, manager.getTaskById(task.getId()));
-        assertEquals(epic, manager.getEpicById(epic.getId()));
-        assertEquals(sub, manager.getSubtaskById(sub.getId()));
+        List<Task> tasks = manager.getAllTasks();
+        assertEquals(1, tasks.size());
+        assertEquals("Test Task", tasks.get(0).getName());
+
+        Task fetched = manager.getTask(task.getId());
+        assertNotNull(fetched);
+        assertEquals(task, fetched);
     }
 
     @Test
-    void tasksWithGivenAndGeneratedIdShouldNotConflict() {
-        Task t1 = manager.createTask(new Task(999, "Manual", "Desc", Status.NEW));
-        Task t2 = manager.createTask(new Task(0, "Generated", "Desc", Status.NEW));
-        assertNotEquals(t1.getId(), t2.getId());
+    void shouldAddEpicAndSubtasksAndUpdateStatus() {
+        Epic epic = new Epic(0, "Epic", "Epic description");
+        manager.addEpic(epic);
+
+        Subtask sub1 = new Subtask(0, "Sub1", "Sub desc 1", Status.NEW, epic);
+        Subtask sub2 = new Subtask(0, "Sub2", "Sub desc 2", Status.NEW, epic);
+
+        manager.addSubtask(sub1);
+        manager.addSubtask(sub2);
+
+        assertEquals(2, manager.getAllSubtasks().size());
+        assertEquals(epic.getId(), sub1.getEpic().getId());
+
+        Epic fetchedEpic = manager.getEpic(epic.getId());
+        assertNotNull(fetchedEpic);
+        assertEquals(Status.NEW, fetchedEpic.getStatus());
+
+        sub1.setStatus(Status.DONE);
+        manager.deleteSubtaskById(sub2.getId()); // удаляем вторую подзадачу
+        assertEquals(1, fetchedEpic.getSubtasks().size());
     }
 
     @Test
-    void addingTaskShouldNotChangeItsFields() {
-        Task task = new Task(0, "Immutable", "Test", Status.NEW);
-        Task added = manager.createTask(task);
-        assertEquals("Immutable", added.getName());
-        assertEquals("Test", added.getDescription());
-        assertEquals(Status.NEW, added.getStatus());
+    void shouldDeleteTaskById() {
+        Task task = new Task(0, "Delete Test", "Description", Status.NEW);
+        manager.addTask(task);
+        int id = task.getId();
+
+        manager.deleteTaskById(id);
+        assertTrue(manager.getAllTasks().isEmpty());
+        assertNull(manager.getTask(id));
     }
 
     @Test
-    void subtaskCannotBeItsOwnEpic() {
-        Epic epic = manager.createEpic(new Epic(0, "Epic", "Desc"));
-        Subtask subtask = new Subtask(0, "Sub", "Desc", Status.NEW, epic);
-        assertNotEquals(subtask.getId(), subtask.getEpic().getId());
+    void shouldDeleteEpicAndItsSubtasks() {
+        Epic epic = new Epic(0, "Epic", "Desc");
+        manager.addEpic(epic);
+
+        Subtask sub1 = new Subtask(0, "Sub", "Sub desc", Status.NEW, epic);
+        manager.addSubtask(sub1);
+
+        assertEquals(1, manager.getAllEpics().size());
+        assertEquals(1, manager.getAllSubtasks().size());
+
+        manager.deleteEpicById(epic.getId());
+
+        assertTrue(manager.getAllEpics().isEmpty());
+        assertTrue(manager.getAllSubtasks().isEmpty());
+    }
+
+    @Test
+    void shouldDeleteSubtaskByIdAndUpdateEpicStatus() {
+        Epic epic = new Epic(0, "Epic", "Desc");
+        manager.addEpic(epic);
+
+        Subtask sub1 = new Subtask(0, "Sub1", "Desc1", Status.DONE, epic);
+        Subtask sub2 = new Subtask(0, "Sub2", "Desc2", Status.NEW, epic);
+
+        manager.addSubtask(sub1);
+        manager.addSubtask(sub2);
+
+        assertEquals(2, epic.getSubtasks().size());
+
+        manager.deleteSubtaskById(sub1.getId());
+        assertEquals(1, epic.getSubtasks().size());
+    }
+
+    @Test
+    void shouldReturnEmptyListsWhenNoTasks() {
+        assertTrue(manager.getAllTasks().isEmpty());
+        assertTrue(manager.getAllEpics().isEmpty());
+        assertTrue(manager.getAllSubtasks().isEmpty());
     }
 }

@@ -9,15 +9,26 @@ public class Main {
     public static void main(String[] args) {
         TaskManager taskManager = new InMemoryTaskManager();
 
-        Task task1 = taskManager.createTask(new Task(0, "Купить продукты", "Молоко, яйца", Status.NEW));
-        Task task2 = taskManager.createTask(new Task(0, "Позвонить врачу", "Записаться на приём", Status.NEW));
+        Task task1 = new Task(0, "Купить продукты", "Молоко, яйца", Status.NEW);
+        Task task2 = new Task(0, "Позвонить врачу", "Записаться на приём", Status.NEW);
 
-        Epic epic1 = taskManager.createEpic(new Epic(0, "Переезд", "Собрать и перевезти вещи"));
-        Epic epic2 = taskManager.createEpic(new Epic(0, "Отпуск", "Подготовка к отдыху"));
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
 
-        Subtask sub1 = taskManager.createSubtask(new Subtask(0, "Собрать коробки", "Упаковать всё", Status.NEW, epic1));
-        Subtask sub2 = taskManager.createSubtask(new Subtask(0, "Упаковать кошку", "Кошка в переноске", Status.NEW, epic1));
-        Subtask sub3 = taskManager.createSubtask(new Subtask(0, "Купить билеты", "Самолёт туда-обратно", Status.NEW, epic2));
+        Epic epic1 = new Epic(0, "Переезд", "Собрать и перевезти вещи");
+        Epic epic2 = new Epic(0, "Отпуск", "Подготовка к отдыху");
+
+        taskManager.addEpic(epic1);
+        taskManager.addEpic(epic2);
+
+        // Передаем сами объекты Epic вместо их ID
+        Subtask sub1 = new Subtask(0, "Собрать коробки", "Упаковать всё", Status.NEW, epic1);
+        Subtask sub2 = new Subtask(0, "Упаковать кошку", "Кошка в переноске", Status.NEW, epic1);
+        Subtask sub3 = new Subtask(0, "Купить билеты", "Самолёт туда-обратно", Status.NEW, epic2);
+
+        taskManager.addSubtask(sub1);
+        taskManager.addSubtask(sub2);
+        taskManager.addSubtask(sub3);
 
         System.out.println("Задачи:");
         for (Task task : taskManager.getAllTasks()) {
@@ -35,48 +46,32 @@ public class Main {
         }
 
         task1.setStatus(Status.DONE);
-        taskManager.updateTask(task1);
-
         sub1.setStatus(Status.IN_PROGRESS);
-        taskManager.updateSubtask(sub1);
-
         sub2.setStatus(Status.DONE);
-        taskManager.updateSubtask(sub2);
 
-        epic1.setStatus(Status.IN_PROGRESS);
-        taskManager.updateEpic(epic1);
+        epic1.recalculateStatus();
 
-        System.out.println("Обновлённые Задачи:");
+        System.out.println("\nПосле обновления статусов:");
         for (Task task : taskManager.getAllTasks()) {
             System.out.println(task);
         }
-
-        System.out.println("Обновлённые Эпики:");
         for (Epic epic : taskManager.getAllEpics()) {
             System.out.println(epic);
         }
-
-        System.out.println("Обновлённые Подзадачи:");
         for (Subtask subtask : taskManager.getAllSubtasks()) {
             System.out.println(subtask);
         }
 
-        taskManager.deleteSubtask(sub1.getId());
-        taskManager.deleteEpic(epic2.getId());
+        taskManager.deleteSubtaskById(sub1.getId());
+        taskManager.deleteEpicById(epic2.getId());
 
-        System.out.println("После удаления подзадачи и эпика:");
-
-        System.out.println("Задачи:");
+        System.out.println("\nПосле удаления подзадачи и эпика:");
         for (Task task : taskManager.getAllTasks()) {
             System.out.println(task);
         }
-
-        System.out.println("Эпики:");
         for (Epic epic : taskManager.getAllEpics()) {
             System.out.println(epic);
         }
-
-        System.out.println("Подзадачи:");
         for (Subtask subtask : taskManager.getAllSubtasks()) {
             System.out.println(subtask);
         }
